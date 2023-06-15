@@ -14,6 +14,7 @@
   
   <script>
   import axios from 'axios';
+  import keypadSound from '../../public/audio/keypadpress.wav'
   export default {
     data() {
       return {
@@ -30,6 +31,7 @@
     },
     methods: {
       updateDisplay(number) {
+        this.playSound()
         this.displayText += number;
       },
       confirm() {
@@ -48,6 +50,10 @@
       },
       cancel() {
         this.displayText = "";
+      },
+      playSound() {
+        const audio = new Audio(keypadSound);
+        audio.play();
       }
     }
   };
