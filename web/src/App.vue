@@ -2,14 +2,23 @@
 <template>
   <!-- Here we're rendering the HelloWorld component -->
   <KeyPadComponent class="main" :show="showKeyPad" @confirm-keypad="confirmKeypad"/>
+  <SearchGameComponent class="main" :show="showSearchGame" :time="sgTime" :additionalTime="sgAdditionalTime" :targetClicks="sgTargetClicks" @complete-search-game="completeSearchGame" />
 </template>
 
 <script setup>
 import KeyPadComponent from "./components/KeyPadComponent.vue";
+import SearchGameComponent from "./components/SearchGameComponent.vue"
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
+// Show Components
 const showKeyPad = ref(false)
+const showSearchGame = ref(false)
+
+//Search Game Props
+const sgTime = ref(10)
+const sgAdditionalTime = ref(1)
+const sgTargetClicks = ref(5)
 
 onMounted(() => {
   window.addEventListener('message', handleNUIEvent);
@@ -22,6 +31,16 @@ function handleNUIEvent(event) {
   }
   if (event.data.action === "closeKeyPad") {
     showKeyPad.value = event.data.show
+    showSearchGame.value = event.data.show
+  }
+  if (event.data.action === "openSearchGame") {
+    sgTime.value = event.data.time
+    sgAdditionalTime.value = event.data.additionalTime
+    sgTargetClicks.value = event.data.targetClicks
+    showSearchGame.value = event.data.show
+  }
+  if (event.data.action === "closeSearchGame") {
+    showSearchGame.value = event.data.show
   }
 }
 
@@ -44,6 +63,9 @@ function handleKeyDown(event) {
   methods: {
     confirmKeypad() {
       this.showKeyPad = false
+    },
+    completeSearchGame() {
+      this.showSearchGame = false
     }
   }
 }
